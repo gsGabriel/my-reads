@@ -68,7 +68,7 @@ class ListBooks extends React.Component {
   render() {
     const { anchorEl } = this.state;
     const { classes, books, shelfs, onUpdateBook } = this.props;
-
+    
     const open = Boolean(anchorEl);
     return (
       <div className={classes.root}>
@@ -76,13 +76,13 @@ class ListBooks extends React.Component {
           {books.length > 0 ? books.map(book => (
             <div key={book.id}>
               <GridListTile key={book.id}>
-                <Card className={classes.card}>
+                <Card className={classes.card} key={book.id}>
                   <CardHeader
                     className={classes.cardHeader}
                     action={
                       <IconButton
                         aria-label="More"
-                        aria-owns={open ? 'long-menu' : null}
+                        aria-owns={open ? book.id : null}
                         aria-haspopup="true"
                         onClick={this.onMenuOpen}
                       >
@@ -102,10 +102,11 @@ class ListBooks extends React.Component {
                       'zoom=1',
                       'zoom=0'
                     )}
-                    title="Contemplative Reptile"
+                    title={book.title}
                   />
                   <Menu
-                    id="long-menu"
+                    id={book.id}
+                    key={book.id}
                     anchorEl={anchorEl}
                     open={open}
                     onClose={this.onMenuClose}

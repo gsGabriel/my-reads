@@ -31,10 +31,6 @@ const styles = theme => ({
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper
   },
-  content: {
-    width: '85%',
-    margin: '80px auto'
-  },
   grow: {
     flexGrow: 12
   },
@@ -99,7 +95,7 @@ class App extends React.Component {
       <div>
         <Route
           path="/search"
-          render={() => <Search myBooks={this.state.Books} />}
+          render={() => <Search myBooks={books} shelfs={shelfs} onUpdateBook={this.updateBook} />}
         />
         <Route
           exact
@@ -131,7 +127,7 @@ class App extends React.Component {
                   <AddIcon />
                 </Button>
               </Tooltip>
-              <div className={classes.content}>
+              <div className="content">
                {shelfs.map((s) => (
                   <div key={s.key}>
                     <Typography variant="h6" color="inherit">
