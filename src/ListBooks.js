@@ -46,31 +46,35 @@ const styles = theme => ({
   }
 });
 
-const options = [ { key: 'currentlyReading', text: 'Current Reading'}, { key: 'wantToRead', text: 'Want to Read'}, { key: 'read', text: 'Read'}];
-
 class ListBooks extends React.Component {
   state = {
     anchorEl: null
-  };
+  }
 
   onMenuOpen = event => {
     this.setState({ anchorEl: event.currentTarget });
-  };
+  }
 
   onMenuClose = () => {
-    this.setState({ anchorEl: null });
-  };
+    this.setState({ anchorEl: null })
+  }
+
+  onMenuClick = (book, shelf, onUpdateBook) => {
+    onUpdateBook(book, shelf)
+
+    this.setState({ anchorEl: null })
+  }
 
   render() {
     const { anchorEl } = this.state;
-    const { classes, books } = this.props;
+    const { classes, books, shelfs, onUpdateBook } = this.props;
 
     const open = Boolean(anchorEl);
     return (
       <div className={classes.root}>
-        <GridList className={classes.gridList}>
-          {books.map(book => (
-            <div>
+        <GridList className={classes.gridList} cols={1}>
+          {books.length > 0 ? books.map(book => (
+            <div key={book.id}>
               <GridListTile key={book.id}>
                 <Card className={classes.card}>
                   <CardHeader
@@ -111,11 +115,11 @@ class ListBooks extends React.Component {
                       }
                     }}
                   >
-                    {options.map(option => (
+                    {shelfs.map(option => (
                       <MenuItem
                         key={option.key}
-                        selected={option.key == book.shelf}
-                        onClick={this.onMenuClose}
+                        selected={option.key === book.shelf}
+                        onClick={() => this.onMenuClick(book, option.key, onUpdateBook)}
                       >
                         {option.text}
                       </MenuItem>
@@ -124,7 +128,7 @@ class ListBooks extends React.Component {
                 </Card>
               </GridListTile>
             </div>
-          ))}
+          )) : <h3>No books available</h3>}
         </GridList>
       </div>
     );
@@ -133,7 +137,9 @@ class ListBooks extends React.Component {
 
 ListBooks.propTypes = {
   classes: PropTypes.object.isRequired,
-  books: PropTypes.array.isRequired
+  books: PropTypes.array.isRequired,
+  shelfs: PropTypes.array.isRequired,
+  onUpdateBook: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(ListBooks);

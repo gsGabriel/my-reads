@@ -50,7 +50,8 @@ const styles = theme => ({
 
 class SearchInput extends React.Component {
   render() {
-    const { classes } = this.props;
+    const { classes, onUpdateQuery } = this.props;
+    
     return (
       <div className={classes.search}>
         <div className={classes.searchIcon}>
@@ -62,6 +63,7 @@ class SearchInput extends React.Component {
             root: classes.inputRoot,
             input: classes.inputInput
           }}
+          onChange={(event) => {onUpdateQuery(event.currentTarget.value)}}
         />
       </div>
     );

@@ -52,20 +52,49 @@ const styles = theme => ({
   }
 });
 
+const shelfs = [ { key: 'currentlyReading', text: 'Current Reading'}, { key: 'wantToRead', text: 'Want to Read'}, { key: 'read', text: 'Read'}];
 class App extends React.Component {
   state = {
-    books: []
+    books: [],
+    query: ''
   };
 
   componentDidMount() {
     BooksAPI.getAll().then(books => {
-      debugger;
       this.setState({ books: books });
     });
   }
 
+  updateBook = (book, shelf) => {
+    this.setState((currentState) => ({
+      books: currentState.books.filter((b) => {
+        if(b.id === book.id){
+          b.shelf = shelf
+        }
+
+        return b;
+      })
+    }))
+
+    BooksAPI.update(book, shelf)
+  }
+
+  updateQuery = (query) => {
+    this.setState(() => ({
+      query: query.trim()
+    }))
+  }
+
   render() {
+    const { query, books } = this.state
     const { classes } = this.props;
+
+    const showingBooks = query === ''
+    ? books
+    : books.filter((b) => (
+        b.title.toLowerCase().includes(query.toLowerCase()) || (b.authors ? b.authors.join(', ') : '').toLowerCase().includes(query.toLowerCase())
+      ))
+
     return (
       <div>
         <Route
@@ -87,7 +116,7 @@ class App extends React.Component {
                   >
                     My Reads
                   </Typography>
-                  <SearchInput />
+                  <SearchInput onUpdateQuery={this.updateQuery}/>
                 </Toolbar>
               </AppBar>
               <Tooltip title="Add">
@@ -103,34 +132,22 @@ class App extends React.Component {
                 </Button>
               </Tooltip>
               <div className={classes.content}>
-                <Typography variant="h6" color="inherit">
-                  Current Reading
-                </Typography>
-                <Divider inset component="h6" />
-                <ListBooks
-                  books={this.state.books.filter(b =>
-                    b.shelf.includes('currentlyReading')
-                  )}
-                />
-                <br />
-                <Typography variant="h6" color="inherit">
-                  Want to Read
-                </Typography>
-                <Divider inset component="h6" />
-                <ListBooks
-                  books={this.state.books.filter(b =>
-                    b.shelf.includes('wantToRead')
-                  )}
-                />
-                <br />
-                <Typography variant="h6" color="inherit">
-                  Read
-                </Typography>
-                <Divider inset component="h6" />
-                <ListBooks
-                  books={this.state.books.filter(b => b.shelf.includes('read'))}
-                />
-                <br />
+               {shelfs.map((s) => (
+                  <div key={s.key}>
+                    <Typography variant="h6" color="inherit">
+                      {s.text}
+                    </Typography>
+                    <Divider inset component="h6" />
+                    <ListBooks
+                      books={showingBooks.filter(b =>
+                        b.shelf.includes(s.key)
+                      )}
+                      shelfs={shelfs}
+                      onUpdateBook={this.updateBook}
+                    />
+                    <br />
+                  </div>
+               ))}
               </div>
             </div>
           )}
