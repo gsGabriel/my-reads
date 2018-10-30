@@ -46,18 +46,18 @@ const styles = theme => ({
   }
 });
 
-const options = ['Current Reading', 'Want to Read', 'Read'];
+const options = [ { key: 'currentlyReading', text: 'Current Reading'}, { key: 'wantToRead', text: 'Want to Read'}, { key: 'read', text: 'Read'}];
 
 class ListBooks extends React.Component {
   state = {
     anchorEl: null
   };
 
-  handleClick = event => {
+  onMenuOpen = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  handleClose = () => {
+  onMenuClose = () => {
     this.setState({ anchorEl: null });
   };
 
@@ -80,7 +80,7 @@ class ListBooks extends React.Component {
                         aria-label="More"
                         aria-owns={open ? 'long-menu' : null}
                         aria-haspopup="true"
-                        onClick={this.handleClick}
+                        onClick={this.onMenuOpen}
                       >
                         <MoreVertIcon fontSize="small" />
                       </IconButton>
@@ -104,20 +104,20 @@ class ListBooks extends React.Component {
                     id="long-menu"
                     anchorEl={anchorEl}
                     open={open}
-                    onClose={this.handleClose}
+                    onClose={this.onMenuClose}
                     PaperProps={{
                       style: {
-                        width: 200
+                        width: 150
                       }
                     }}
                   >
                     {options.map(option => (
                       <MenuItem
-                        key={option}
-                        selected={option === 'Pyxis'}
-                        onClick={this.handleClose}
+                        key={option.key}
+                        selected={option.key == book.shelf}
+                        onClick={this.onMenuClose}
                       >
-                        {option}
+                        {option.text}
                       </MenuItem>
                     ))}
                   </Menu>
@@ -130,5 +130,10 @@ class ListBooks extends React.Component {
     );
   }
 }
+
+ListBooks.propTypes = {
+  classes: PropTypes.object.isRequired,
+  books: PropTypes.array.isRequired
+};
 
 export default withStyles(styles)(ListBooks);
