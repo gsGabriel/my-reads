@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Search from './Search';
 import SearchInput from './SearchInput';
 import ListBooks from './ListBooks';
+import * as BooksAPI from './BooksAPI';
 
 //Material UI
 import AppBar from '@material-ui/core/AppBar';
@@ -52,11 +53,25 @@ const styles = theme => ({
 });
 
 class App extends React.Component {
+  state = {
+    books: []
+  };
+
+  componentDidMount() {
+    BooksAPI.getAll().then(books => {
+      debugger;
+      this.setState({ books: books });
+    });
+  }
+
   render() {
     const { classes } = this.props;
     return (
       <div>
-        <Route path="/search" component={Search} />
+        <Route
+          path="/search"
+          render={() => <Search myBooks={this.state.Books} />}
+        />
         <Route
           exact
           path="/"
@@ -92,17 +107,30 @@ class App extends React.Component {
                   Current Reading
                 </Typography>
                 <Divider inset component="h6" />
-                <ListBooks />
+                <ListBooks
+                  books={this.state.books.filter(b =>
+                    b.shelf.includes('currentlyReading')
+                  )}
+                />
+                <br />
                 <Typography variant="h6" color="inherit">
                   Want to Read
                 </Typography>
                 <Divider inset component="h6" />
-                <ListBooks />
+                <ListBooks
+                  books={this.state.books.filter(b =>
+                    b.shelf.includes('wantToRead')
+                  )}
+                />
+                <br />
                 <Typography variant="h6" color="inherit">
                   Read
                 </Typography>
                 <Divider inset component="h6" />
-                <ListBooks />
+                <ListBooks
+                  books={this.state.books.filter(b => b.shelf.includes('read'))}
+                />
+                <br />
               </div>
             </div>
           )}

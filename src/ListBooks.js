@@ -19,12 +19,30 @@ import { withStyles } from '@material-ui/core/styles';
 //My css
 
 const styles = theme => ({
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper
+  },
+  gridList: {
+    flexWrap: 'nowrap',
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    transform: 'translateZ(0)',
+    minHeight: 500
+  },
   card: {
-    maxWidth: 200,
-    margin: '15px 15px'
+    width: 260,
+    margin: '10px 3px'
+  },
+  cardHeader: {
+    height: 80,
+    margin: '10px 3px'
   },
   media: {
-    height: 200
+    height: 0,
+    paddingTop: '125%'
   }
 });
 
@@ -45,61 +63,68 @@ class ListBooks extends React.Component {
 
   render() {
     const { anchorEl } = this.state;
-    const { classes } = this.props;
+    const { classes, books } = this.props;
 
     const open = Boolean(anchorEl);
     return (
-      <div>
-        <GridList cols={6}>
-          <GridListTile key={1} cols={2} rows={2}>
-            <Card className={classes.card}>
-              <CardHeader
-                className={classes.cardHeader}
-                action={
-                  <IconButton
-                    aria-label="More"
-                    aria-owns={open ? 'long-menu' : null}
-                    aria-haspopup="true"
-                    onClick={this.handleClick}
+      <div className={classes.root}>
+        <GridList className={classes.gridList}>
+          {books.map(book => (
+            <div>
+              <GridListTile key={book.id}>
+                <Card className={classes.card}>
+                  <CardHeader
+                    className={classes.cardHeader}
+                    action={
+                      <IconButton
+                        aria-label="More"
+                        aria-owns={open ? 'long-menu' : null}
+                        aria-haspopup="true"
+                        onClick={this.handleClick}
+                      >
+                        <MoreVertIcon fontSize="small" />
+                      </IconButton>
+                    }
+                    title={book.title}
+                    titleTypographyProps={{
+                      variant: 'subtitle2',
+                      color: 'primary'
+                    }}
+                    subheader={book.authors ? book.authors.join(', ') : ''}
+                  />
+                  <CardMedia
+                    className={classes.media}
+                    image={book.imageLinks.thumbnail.replace(
+                      'zoom=1',
+                      'zoom=0'
+                    )}
+                    title="Contemplative Reptile"
+                  />
+                  <Menu
+                    id="long-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={this.handleClose}
+                    PaperProps={{
+                      style: {
+                        width: 200
+                      }
+                    }}
                   >
-                    <MoreVertIcon fontSize="small" />
-                  </IconButton>
-                }
-                title="Seja foda"
-                titleTypographyProps={{
-                  variant: 'subtitle1',
-                  color: 'primary'
-                }}
-                subheader="Gabriel César"
-              />
-              <CardMedia
-                className={classes.media}
-                image="https://images.livrariasaraiva.com.br/imagemnet/imagem.aspx/?pro_id=9873991&qld=90&l=430&a=-1=1004474818"
-                title="Contemplative Reptile"
-              />
-              <Menu
-                id="long-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={this.handleClose}
-                PaperProps={{
-                  style: {
-                    width: 200
-                  }
-                }}
-              >
-                {options.map(option => (
-                  <MenuItem
-                    key={option}
-                    selected={option === 'Pyxis'}
-                    onClick={this.handleClose}
-                  >
-                    {option}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Card>
-          </GridListTile>
+                    {options.map(option => (
+                      <MenuItem
+                        key={option}
+                        selected={option === 'Pyxis'}
+                        onClick={this.handleClose}
+                      >
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Card>
+              </GridListTile>
+            </div>
+          ))}
         </GridList>
       </div>
     );
