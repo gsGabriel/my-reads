@@ -48,7 +48,11 @@ const styles = theme => ({
   }
 });
 
-const shelfs = [ { key: 'currentlyReading', text: 'Current Reading'}, { key: 'wantToRead', text: 'Want to Read'}, { key: 'read', text: 'Read'}];
+const shelfs = [
+  { key: 'currentlyReading', text: 'Current Reading' },
+  { key: 'wantToRead', text: 'Want to Read' },
+  { key: 'read', text: 'Read' }
+];
 class App extends React.Component {
   state = {
     books: [],
@@ -61,41 +65,75 @@ class App extends React.Component {
     });
   }
 
+  /**
+   * @description Update book
+   * @constructor
+   * @param {object} book - book to update
+   * @param {string} shelf - new shelf to book
+   */
   updateBook = (book, shelf) => {
-    this.setState((currentState) => ({
-      books: currentState.books.filter((b) => {
-        if(b.id === book.id){
-          b.shelf = shelf
+    this.setState(currentState => ({
+      books: currentState.books.filter(b => {
+        if (b.id === book.id) {
+          b.shelf = shelf;
         }
 
         return b;
       })
-    }))
+    }));
 
-    BooksAPI.update(book, shelf)
-  }
+    BooksAPI.update(book, shelf);
+  };
 
-  updateQuery = (query) => {
+  /**
+   * @description Add book to my books
+   * @constructor
+   * @param {object} book - book to update
+   */
+  addBook = book => {
+    this.setState(currentState => ({
+      books: currentState.books.concat([book])
+    }));
+  };
+
+  /**
+   * @description Method to update a query in filter
+   * @constructor
+   * @param {string} query - query to filter
+   */
+  updateQuery = query => {
     this.setState(() => ({
       query: query.trim()
-    }))
-  }
+    }));
+  };
 
   render() {
-    const { query, books } = this.state
+    const { query, books } = this.state;
     const { classes } = this.props;
 
-    const showingBooks = query === ''
-    ? books
-    : books.filter((b) => (
-        b.title.toLowerCase().includes(query.toLowerCase()) || (b.authors ? b.authors.join(', ') : '').toLowerCase().includes(query.toLowerCase())
-      ))
+    const showingBooks =
+      query === ''
+        ? books
+        : books.filter(
+            b =>
+              b.title.toLowerCase().includes(query.toLowerCase()) ||
+              (b.authors ? b.authors.join(', ') : '')
+                .toLowerCase()
+                .includes(query.toLowerCase())
+          );
 
     return (
       <div>
         <Route
           path="/search"
-          render={() => <Search myBooks={books} shelfs={shelfs} onUpdateBook={this.updateBook} />}
+          render={() => (
+            <Search
+              myBooks={books}
+              shelfs={shelfs}
+              onAddBook={this.addBook}
+              onUpdateBook={this.updateBook}
+            />
+          )}
         />
         <Route
           exact
@@ -112,7 +150,7 @@ class App extends React.Component {
                   >
                     My Reads
                   </Typography>
-                  <SearchInput onUpdateQuery={this.updateQuery}/>
+                  <SearchInput onUpdateQuery={this.updateQuery} />
                 </Toolbar>
               </AppBar>
               <Tooltip title="Add">
@@ -128,22 +166,20 @@ class App extends React.Component {
                 </Button>
               </Tooltip>
               <div className="content">
-               {shelfs.map((s) => (
+                {shelfs.map(s => (
                   <div key={s.key}>
                     <Typography variant="h6" color="inherit">
                       {s.text}
                     </Typography>
                     <Divider inset component="h6" />
                     <ListBooks
-                      books={showingBooks.filter(b =>
-                        b.shelf.includes(s.key)
-                      )}
+                      books={showingBooks.filter(b => b.shelf.includes(s.key))}
                       shelfs={shelfs}
                       onUpdateBook={this.updateBook}
                     />
                     <br />
                   </div>
-               ))}
+                ))}
               </div>
             </div>
           )}

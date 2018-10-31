@@ -15,6 +15,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
+import toRenderProps from 'recompose/toRenderProps';
+import withState from 'recompose/withState';
 
 //My css
 
@@ -46,90 +48,113 @@ const styles = theme => ({
   }
 });
 
+const WithState = toRenderProps(withState('anchorEl', 'updateAnchorEl', null));
+
 class ListBooks extends React.Component {
   state = {
     anchorEl: null
-  }
+  };
 
-  onMenuOpen = event => {
-    this.setState({ anchorEl: event.currentTarget });
-  }
-
-  onMenuClose = () => {
-    this.setState({ anchorEl: null })
-  }
-
+  /**
+   * @description Event on menu click
+   * @constructor
+   * @param {object} book - book to update
+   * @param {string} shelf - new shelf to book
+   * @param {func} onUpdateBook - book update callback
+   */
   onMenuClick = (book, shelf, onUpdateBook) => {
-    onUpdateBook(book, shelf)
+    onUpdateBook(book, shelf);
 
-    this.setState({ anchorEl: null })
-  }
+    this.setState({ anchorEl: null });
+  };
 
   render() {
-    const { anchorEl } = this.state;
     const { classes, books, shelfs, onUpdateBook } = this.props;
-    
-    const open = Boolean(anchorEl);
     return (
       <div className={classes.root}>
         <GridList className={classes.gridList} cols={1}>
-          {books.length > 0 ? books.map(book => (
-            <div key={book.id}>
-              <GridListTile key={book.id}>
-                <Card className={classes.card} key={book.id}>
-                  <CardHeader
-                    className={classes.cardHeader}
-                    action={
-                      <IconButton
-                        aria-label="More"
-                        aria-owns={open ? book.id : null}
-                        aria-haspopup="true"
-                        onClick={this.onMenuOpen}
-                      >
-                        <MoreVertIcon fontSize="small" />
-                      </IconButton>
-                    }
-                    title={book.title}
-                    titleTypographyProps={{
-                      variant: 'subtitle2',
-                      color: 'primary'
-                    }}
-                    subheader={book.authors ? book.authors.join(', ') : ''}
-                  />
-                  <CardMedia
-                    className={classes.media}
-                    image={book.imageLinks.thumbnail.replace(
-                      'zoom=1',
-                      'zoom=0'
-                    )}
-                    title={book.title}
-                  />
-                  <Menu
-                    id={book.id}
-                    key={book.id}
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={this.onMenuClose}
-                    PaperProps={{
-                      style: {
-                        width: 150
+          {books.length > 0 ? (
+            books.map(book => (
+              <div key={book.id}>
+                <GridListTile>
+                  <Card className={classes.card} key={book.id}>
+                    <CardHeader
+                      className={classes.cardHeader}
+                      action={
+                        <WithState>
+                          {({ anchorEl, updateAnchorEl }) => {
+                            const open = Boolean(anchorEl);
+                            const handleClose = () => {
+                              updateAnchorEl(null);
+                            };
+
+                            return (
+                              <React.Fragment>
+                                <IconButton
+                                  aria-owns={
+                                    open ? 'render-props-menu' : undefined
+                                  }
+                                  aria-haspopup="true"
+                                  onClick={event => {
+                                    updateAnchorEl(event.currentTarget);
+                                  }}
+                                >
+                                  <MoreVertIcon fontSize="small" />
+                                </IconButton>
+                                <Menu
+                                  iid="render-props-menu"
+                                  anchorEl={anchorEl}
+                                  open={open}
+                                  onClose={handleClose}
+                                  PaperProps={{
+                                    style: {
+                                      width: 150
+                                    }
+                                  }}
+                                >
+                                  {shelfs.map(option => (
+                                    <MenuItem
+                                      key={option.key}
+                                      selected={option.key === book.shelf}
+                                      onClick={() =>
+                                        this.onMenuClick(
+                                          book,
+                                          option.key,
+                                          onUpdateBook
+                                        )
+                                      }
+                                    >
+                                      {option.text}
+                                    </MenuItem>
+                                  ))}
+                                </Menu>
+                              </React.Fragment>
+                            );
+                          }}
+                        </WithState>
                       }
-                    }}
-                  >
-                    {shelfs.map(option => (
-                      <MenuItem
-                        key={option.key}
-                        selected={option.key === book.shelf}
-                        onClick={() => this.onMenuClick(book, option.key, onUpdateBook)}
-                      >
-                        {option.text}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </Card>
-              </GridListTile>
-            </div>
-          )) : <h3>No books available</h3>}
+                      title={book.title}
+                      titleTypographyProps={{
+                        variant: 'subtitle2',
+                        color: 'primary'
+                      }}
+                      subheader={book.authors ? book.authors.join(', ') : ''}
+                    />
+                    <CardMedia
+                      className={classes.media}
+                      image={book.imageLinks.thumbnail.replace(
+                        'zoom=1',
+                        'zoom=0'
+                      )}
+                      title={book.title}
+                    />
+                  </Card>
+                </GridListTile>
+              </div>
+            ))
+          ) : (
+            <h3>No books available</h3>
+          )}
         </GridList>
       </div>
     );
