@@ -1,6 +1,6 @@
 # My reads
 A book read's management application.<br>
-Project created as part of the Udacity nanodegree program
+Project created as part of the Udacity React Nanodegree program
 
 # Project Setup
 * clone the Project - `git clone` https://github.com/gsGabriel/my-reads.git
