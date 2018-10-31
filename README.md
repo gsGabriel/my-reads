@@ -1,5 +1,5 @@
 # My reads
-A book read's management application
+A book read's management application.<br>
 Project created as part of the Udacity nanodegree program
 
 # Project Setup
