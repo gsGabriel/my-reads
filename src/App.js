@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 //My components
 import Search from './components/Search';
 import SearchInput from './components/SearchInput';
-import ListBooks from './components/ListBooks';
+import ListShelfs from './components/ListShelfs';
 import * as BooksAPI from './BooksAPI';
 
 //Material UI
@@ -16,7 +16,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
-import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
 
 //My css
@@ -165,20 +164,11 @@ class App extends React.Component {
                 </Button>
               </Tooltip>
               <div className="content">
-                {shelfs.map(s => (
-                  <div key={s.key}>
-                    <Typography variant="h6" color="inherit">
-                      {s.text}
-                    </Typography>
-                    <Divider inset component="h6" />
-                    <ListBooks
-                      books={showingBooks.filter(b => b.shelf.includes(s.key))}
-                      shelfs={shelfs}
-                      onUpdateBook={this.updateBook}
-                    />
-                    <br />
-                  </div>
-                ))}
+                <ListShelfs
+                  books={showingBooks}
+                  shelfs={shelfs}
+                  onUpdateBook={this.updateBook}
+                />
               </div>
             </div>
           )}
