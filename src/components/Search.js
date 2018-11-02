@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 //My components
 import ListBooks from './ListBooks';
-import * as BooksAPI from './BooksAPI';
+import * as BooksAPI from '../BooksAPI';
 
 //Material UI
 import AppBar from '@material-ui/core/AppBar';
@@ -27,23 +27,23 @@ class Search extends React.Component {
    * @param {string} query - The query for search
    * @param {array} myBooks - Current my books
    */
-  searchBooks = (query, myBooks) => {
+  searchBooks = async (query, myBooks) => {
     if (query.length > 2) {
-      BooksAPI.search(query).then(result => {
-        if (result.error === undefined) {
-          this.setState({
-            books: result.map(b => {
-              let myBook = myBooks.find(mb => {
-                return mb.id === b.id;
-              });
+      const result = await BooksAPI.search(query);
 
-              if (myBook !== undefined) b = myBook;
+      if (result.error === undefined) {
+        this.setState({
+          books: result.map(b => {
+            let myBook = myBooks.find(mb => {
+              return mb.id === b.id;
+            });
 
-              return b;
-            })
-          });
-        }
-      });
+            if (myBook !== undefined) b = myBook;
+
+            return b;
+          })
+        });
+      }
     }
   };
 
@@ -64,6 +64,7 @@ class Search extends React.Component {
               <ArrowBackIcon fontSize="large" className="close-search" />
             </Link>
             <InputBase
+              className="full"
               placeholder="Search by title or author"
               onChange={event =>
                 this.searchBooks(event.currentTarget.value, myBooks)

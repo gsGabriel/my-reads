@@ -4,9 +4,9 @@ import { Route, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 //My components
-import Search from './Search';
-import SearchInput from './SearchInput';
-import ListBooks from './ListBooks';
+import Search from './components/Search';
+import SearchInput from './components/SearchInput';
+import ListBooks from './components/ListBooks';
 import * as BooksAPI from './BooksAPI';
 
 //Material UI
@@ -59,10 +59,9 @@ class App extends React.Component {
     query: ''
   };
 
-  componentDidMount() {
-    BooksAPI.getAll().then(books => {
-      this.setState({ books: books });
-    });
+  async componentDidMount() {
+    const books = await BooksAPI.getAll();
+    this.setState({ books });
   }
 
   /**
@@ -71,7 +70,7 @@ class App extends React.Component {
    * @param {object} book - book to update
    * @param {string} shelf - new shelf to book
    */
-  updateBook = (book, shelf) => {
+  updateBook = async (book, shelf) => {
     this.setState(currentState => ({
       books: currentState.books.filter(b => {
         if (b.id === book.id) {
@@ -82,7 +81,7 @@ class App extends React.Component {
       })
     }));
 
-    BooksAPI.update(book, shelf);
+    await BooksAPI.update(book, shelf);
   };
 
   /**
