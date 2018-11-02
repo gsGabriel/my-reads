@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import Search from './components/Search';
 import SearchInput from './components/SearchInput';
 import ListShelfs from './components/ListShelfs';
-import * as BooksAPI from './BooksAPI';
+import * as BooksAPI from './common/BooksAPI';
 
 //Material UI
 import AppBar from '@material-ui/core/AppBar';

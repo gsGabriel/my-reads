@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 //My components
 import ListBooks from './ListBooks';
-import * as BooksAPI from '../BooksAPI';
+import * as BooksAPI from '../common/BooksAPI';
 
 //Material UI
 import AppBar from '@material-ui/core/AppBar';
