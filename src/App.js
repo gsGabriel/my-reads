@@ -40,6 +40,7 @@ const styles = theme => ({
     },
     color: theme.palette.primary.dark
   },
+  theme: theme.palette.primary.dark,
   fab: {
     position: 'fixed',
     bottom: theme.spacing.unit * 2,
