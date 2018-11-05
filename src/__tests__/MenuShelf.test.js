@@ -74,7 +74,7 @@ describe('<MenuShelf/>', () => {
     // Expect the menu item is equal of shelfs
     expect(wrapper.find('ListItem')).toHaveLength(shelfs.length);
 
-    // Click on first item
+    // Click outside menu to close
     wrapper
       .find('#render-props-menu')
       .first()
