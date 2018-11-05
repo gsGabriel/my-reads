@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow, mount } from '../enzyme';
+import { mount } from '../enzyme';
 
 import MenuShelf from '../components/MenuShelf';
 
@@ -54,5 +54,33 @@ describe('<MenuShelf/>', () => {
 
     // Expect the mock function called once time
     expect(updateBook.mock.calls.length).toBe(1);
+  });
+
+  test('trigger a close menu function', () => {
+    const book = {};
+    const shelfs = [
+      { key: 'currentlyReading', text: 'Current Reading' },
+      { key: 'wantToRead', text: 'Want to Read' },
+      { key: 'read', text: 'Read' }
+    ];
+    const updateBook = jest.fn();
+
+    const wrapper = mount(
+      <MenuShelf book={book} shelfs={shelfs} onUpdateBook={updateBook} />
+    );
+
+    wrapper.find('button').simulate('click');
+
+    // Expect the menu item is equal of shelfs
+    expect(wrapper.find('ListItem')).toHaveLength(shelfs.length);
+
+    // Click on first item
+    wrapper
+      .find('#render-props-menu')
+      .first()
+      .simulate('mousedown');
+
+    // Expect the mock function called once time
+    expect(updateBook.mock.calls.length).toBe(0);
   });
 });

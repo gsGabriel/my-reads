@@ -27,8 +27,6 @@ class MenuShelf extends React.Component {
    */
   onMenuClick = (book, shelf, onUpdateBook) => {
     onUpdateBook(book, shelf);
-
-    this.setState({ anchorEl: null });
   };
 
   render() {
@@ -67,9 +65,10 @@ class MenuShelf extends React.Component {
                   <MenuItem
                     key={option.key}
                     selected={option.key === book.shelf}
-                    onClick={() =>
-                      this.onMenuClick(book, option.key, onUpdateBook)
-                    }
+                    onClick={() => {
+                      this.onMenuClick(book, option.key, onUpdateBook);
+                      handleClose();
+                    }}
                   >
                     {option.text}
                   </MenuItem>
