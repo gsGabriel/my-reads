@@ -6,7 +6,7 @@ import SearchInput from '../components/SearchInput';
 describe('<SearchInput/>', () => {
   test('renders search input', () => {
     const updateQuery = jest.fn();
-    const wrapper = shallow(<SearchInput onUpdateQuery={updateQuery} />);
+    const wrapper = mount(<SearchInput onUpdateQuery={updateQuery} />);
 
     // Expect the wrapper object to be defined
     expect(wrapper.find('input')).toBeDefined();
