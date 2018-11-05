@@ -27,9 +27,7 @@ describe('<ListShelfs/>', () => {
     expect(wrapper.prop('shelfs')).toEqual(shelfs);
     expect(wrapper.prop('onUpdateBook')).toEqual(updateBook);
   });
-});
 
-describe('<ListShelfs/>', () => {
   test('renders list shelf with books', () => {
     const books = [{ id: 1, shelf: 'read' }];
     const shelfs = [
