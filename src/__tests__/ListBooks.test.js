@@ -17,7 +17,7 @@ describe('<ListBooks/>', () => {
       <ListBooks books={books} shelfs={shelfs} onUpdateBook={updateBook} />
     );
 
-    // Expect the wrapper div for a shelf to be defined
+    // Expect the wrapper h3 of without books to be defined
     expect(wrapper.find('h3')).toBeDefined();
 
     // Expect the wrapper property is the same a mock
@@ -48,12 +48,7 @@ describe('<ListBooks/>', () => {
       <ListBooks books={books} shelfs={shelfs} onUpdateBook={updateBook} />
     );
 
-    // Expect the wrapper div for a shelf to be defined
-    expect(wrapper.find('h3')).toBeDefined();
-
-    // Expect the wrapper property is the same a mock
-    expect(wrapper.prop('books')).toEqual(books);
-    expect(wrapper.prop('shelfs')).toEqual(shelfs);
-    expect(wrapper.prop('onUpdateBook')).toEqual(updateBook);
+    // Expect the wrapper ul of books to be defined
+    expect(wrapper.find('ul')).toBeDefined();
   });
 });
