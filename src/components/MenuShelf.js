@@ -61,6 +61,16 @@ class MenuShelf extends React.Component {
                   }
                 }}
               >
+                <MenuItem
+                  key="none"
+                  selected={'none' === book.shelf || book.shelf === undefined}
+                  onClick={() => {
+                    this.onMenuClick(book, 'none', onUpdateBook);
+                    handleClose();
+                  }}
+                >
+                  None
+                </MenuItem>
                 {shelfs.map(option => (
                   <MenuItem
                     key={option.key}
