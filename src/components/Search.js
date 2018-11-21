@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { DebounceInput } from 'react-debounce-input';
 
 //My components
 import ListBooks from './ListBooks';
@@ -28,22 +29,24 @@ class Search extends React.Component {
    * @param {array} myBooks - Current my books
    */
   searchBooks = async (query, myBooks) => {
-    if (query.length > 2) {
-      const result = await BooksAPI.search(query);
+    const result = await BooksAPI.search(query);
+    debugger;
+    if (result !== undefined && result.error === undefined) {
+      this.setState({
+        books: result.map(b => {
+          let myBook = myBooks.find(mb => {
+            return mb.id === b.id;
+          });
 
-      if (result.error === undefined) {
-        this.setState({
-          books: result.map(b => {
-            let myBook = myBooks.find(mb => {
-              return mb.id === b.id;
-            });
+          if (myBook !== undefined) b = myBook;
 
-            if (myBook !== undefined) b = myBook;
-
-            return b;
-          })
-        });
-      }
+          return b;
+        })
+      });
+    } else {
+      this.setState({
+        books: []
+      });
     }
   };
 
@@ -63,12 +66,12 @@ class Search extends React.Component {
             <Link to="/">
               <ArrowBackIcon fontSize="large" className="close-search" />
             </Link>
-            <InputBase
+            <DebounceInput
+              debounceTimeout={500}
+              onChange={event => this.searchBooks(event.target.value, myBooks)}
               className="full"
               placeholder="Search by title or author"
-              onChange={event =>
-                this.searchBooks(event.currentTarget.value, myBooks)
-              }
+              element={InputBase}
             />
           </Toolbar>
         </AppBar>
